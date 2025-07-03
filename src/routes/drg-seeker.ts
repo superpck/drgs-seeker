@@ -24,7 +24,6 @@ router.get("/", async (req, res, next) => {
 
 router.post("/seeker", async (req: any, res: any, next: NextFunction) => {
   const rows = req.body.data;
-  console.log(rows);
   if (!rows || !Array.isArray(rows) || rows.length === 0) {
     return res.json({ status: 400, message: 'Invalid data format (data: [{row...}])' });
   }
