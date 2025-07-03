@@ -7,7 +7,7 @@
 `
 
 # ขั้นตอน
-``
+```
 1.ติดตั้ง TGrouper จาก website https://www.tcmc.or.th/download-tcmc ทั้ง version 5 และ 6
 2.การติดตั้ง API
   2.1 ติดตั้ง nodejs version 20 ขึ้นไป จาก website ของ nodejs หรือ nvm
@@ -25,4 +25,4 @@
     3.2.1 data ตาม column ของ dbf ที่ใช้คำนวน โดยส่งค่าเป็น array of object ทั้งนี้ควรส่งไม่เกิน 100 rows (สามารถดูจาก drgColumn ใน src/middleware/utils.ts)
     3.2.2 version ระบุ '5' หรือ '6'
   3.3 ระบบจะ return ค่า status, data และ tgrp ที่ใช้คำนวณ
-``
+```
