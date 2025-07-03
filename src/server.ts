@@ -1,6 +1,4 @@
-require('dotenv').config({ debug: false });
-// หรือใช้
-// require('dotenv').config({ silent: true });
+require('@dotenvx/dotenvx').config({ debug: false });
 import express, { Application } from 'express';
 import bodyParser from 'body-parser';
 import helmet from "helmet";

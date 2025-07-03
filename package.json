@@ -3,17 +3,20 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "dev": "npx dotenvx run -- npx ts-node --transpile-only src/server.ts",
+    "start": "npx dotenvx run -- node dist/server.js",
+    "build": "npx tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@dotenvx/dotenvx": "^1.45.2",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "dayjs": "^1.11.13",
     "dbffile": "^1.12.0",
-    "dotenv": "^17.0.0",
     "express": "^4.19.2",
     "file-saver": "^2.0.5",
     "helmet": "^8.1.0",
