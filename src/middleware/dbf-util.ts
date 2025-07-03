@@ -79,18 +79,8 @@ export const drgColumn = () => {
 
 export const dbfToJson = (async (fileName: string) => {
     try {
-        // เปิดไฟล์ DBF
         const dbf = await DBFFile.open(fileName); // ระบุเส้นทางไฟล์ DBF
-        // console.log(`DBF file opened. It contains ${dbf.recordCount} records.`);
-        // console.log(`Field names: ${dbf.fields.map(f => f.name).join(', ')}`);
-
-        // อ่านข้อมูลทั้งหมดจากไฟล์ DBF
         const records = await dbf.readRecords(); // records จะเป็น array ของ objects
-
-        // แสดงข้อมูลในรูปแบบ JSON
-        // console.log('Records:', JSON.stringify(records, null, 2));
-
-        // หากต้องการคืนค่า JSON
         return records;
     } catch (err) {
         console.error('Error reading DBF file:', err);
@@ -98,8 +88,6 @@ export const dbfToJson = (async (fileName: string) => {
 });
 
 export const createDrgTable = (async (fileName: string, data: any) => {
-    // data is Array
-
     // กำหนดเส้นทางไฟล์ DBF ที่ต้องการสร้าง
     fs.unlink(fileName, () => { });
 
