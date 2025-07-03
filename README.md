@@ -3,12 +3,12 @@
 
 # หลักการ
 `
-  เป็นระบบช่วยในการคำนวณหาค่า DRG ตามมาตรฐานของกระทรวงสาธารณสุข
+  เป็นระบบช่วยในการคำนวณหาค่า DRG ตามมาตรฐานสำนักพัฒนากลุ่มโรคร่วมไทย (สรท.) 1[https://www.tcmc.or.th/download-tcmc]2
 `
 
 # ขั้นตอน
 ```
-1.ติดตั้ง TGrouper จาก website https://www.tcmc.or.th/download-tcmc ทั้ง version 5 และ 6
+1.ติดตั้ง Thai Grouper จาก website https://www.tcmc.or.th/download-tcmc ทั้ง version 5 และ 6
 2.การติดตั้ง API
   2.1 ติดตั้ง nodejs version 20 ขึ้นไป จาก website ของ nodejs หรือ nvm
   2.2 ติดตั้ง package ที่จำเป็นด้วยคำสั่ง npm install -g typescript ts-node pm2
