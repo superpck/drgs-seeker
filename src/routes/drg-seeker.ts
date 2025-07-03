@@ -23,6 +23,7 @@ router.get("/", async (req, res, next) => {
 });
 
 router.post("/seeker", async (req: any, res: any, next: NextFunction) => {
+  const version = req.body.version || '6';
   const rows = req.body.data;
   if (!rows || !Array.isArray(rows) || rows.length === 0) {
     return res.json({ status: 400, message: 'Invalid data format (data: [{row...}])' });
@@ -42,10 +43,14 @@ router.post("/seeker", async (req: any, res: any, next: NextFunction) => {
   const suffix = (await randomString(6, 'AlphaNumeric')).toString();
   const dbfFilePath = `${process.env.TEMP_FOLDER}/drg_${dayjs().format('YYYYMMDDHHmmss')}_${suffix}.dbf`;
   try {
+    const foler = version=='5' ? process.env.TGRP5_FOLDER : process.env.TGRP6_FOLDER;
+    const exeFile = version=='5' ? process.env.TGRP5 : process.env.TGRP6;
+   
+    
     createDrgTable(dbfFilePath, data)
       .then(async () => {
-        let tgrpExe = `${process.env.TGRP6_FOLDER}/${process.env.TGRP6}`;
-        let shCommand = `CD ${process.env.TGRP6_FOLDER}/ && ${tgrpExe} ${dbfFilePath}`;
+        let tgrpExe = `${foler}/${exeFile}`;
+        let shCommand = `CD ${foler}/ && ${tgrpExe} ${dbfFilePath}`;
         await shell.exec(shCommand, { silent: true });
         const drgResult = await dbfToJson(dbfFilePath);
 
