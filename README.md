@@ -19,7 +19,7 @@
 3.การเรียกใช้งาน
   3.1 เตรียมข้อมูลในรูปแบบ json โดยมี column ตามมาตรฐาน drg เช่น pdx, sdx1-12, proc1-20 เป็นต้น
   3.2 call ด้วย POST http://<ip เครื่องที่ติดตั้ง>:<port> ที่กำหนดใน file .env>/seeker เช่น
-      const data = [{Hcode: 'xx', An: '..', Pdx: '', ...}, {} , ...];
+      const data = [{Hcode: 'xx', An: '..', Pdx: '', ...}, {...} , ...];
       const url = 'http://192.168.0.1:3000/';
       const response = await fetch(url, {
         method: 'POST',
