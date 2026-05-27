@@ -34,7 +34,7 @@ router.post("/seeker", async (req: any, res: any, next: NextFunction) => {
       row.sex = row.sex.toString();
     }
     if (row?.age){
-      row.age = row.age.toString();
+      row.age = row.age+ "";
     }
     let los = row?.los_day || row?.los || 0;
     let dbfData: any = {
