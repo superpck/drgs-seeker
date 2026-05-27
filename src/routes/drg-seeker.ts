@@ -30,6 +30,12 @@ router.post("/seeker", async (req: any, res: any, next: NextFunction) => {
   }
   let data = [];
   for (let row of rows) {
+    if (row?.sex){
+      row.sex = row.sex.toString();
+    }
+    if (row?.age){
+      row.age = row.age.toString();
+    }
     let los = row?.los_day || row?.los || 0;
     let dbfData: any = {
       hcode: process.env.HOSPCODE || row.hcode || '00000',
