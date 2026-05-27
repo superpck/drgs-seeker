@@ -37,15 +37,22 @@ router.post("/seeker", async (req: any, res: any, next: NextFunction) => {
       row.age = row.age+ "";
     }
     let los = row?.los_day || row?.los || 0;
+    
     let dbfData: any = {
-      hcode: process.env.HOSPCODE || row.hcode || '00000',
-      dateadm: los ? new Date(dayjs().subtract(los, 'days').format('YYYY-MM-DD')) : null,
-      timeadm: los ? '0000' : '',
-      datedsc: los ? new Date(dayjs().format('YYYY-MM-DD')) : null,
-      timedsc: los ? '0000' : '',
-      los,
-      leaveday: row?.leaveday || 0,
+      hcode: process.env.HOSPCODE || row.hcode || '00000'
     };
+    if (row?.dateadm && row?.datedsc){
+      row.dateadm = new Date(row.dateadm);
+      row.datedsc = new Date(row.datedsc);
+    } else {
+      row.dateadm = los ? new Date(dayjs().subtract(los, 'days').format('YYYY-MM-DD')) : null;
+      row.timeadm = los ? '0000' : '';
+      row.datedsc = los ? new Date(dayjs().format('YYYY-MM-DD')) : null;
+      row.timedsc = los ? '0000' : '';
+    }
+
+    row.los = los;
+    row.leaveday = row?.leaveday || 0;
     data.push({ ...row, ...dbfData });
   }
   const suffix = (await randomString(6, 'AlphaNumeric')).toString();
@@ -62,10 +69,8 @@ router.post("/seeker", async (req: any, res: any, next: NextFunction) => {
         await shell.exec(shCommand, { silent: true });
         let drgResult = await dbfToJson(dbfFilePath);
         drgResult = drgResult.map((item: any) => {
-          delete item.dateadm;
-          delete item.timeadm;
-          delete item.datedsc;
-          delete item.timedsc;
+          item.dateadm = item.dateadm? dayjs(item.dateadm).format('YYYY-MM-DD') : null;
+          item.datedsc = item.datedsc? dayjs(item.datedsc).format('YYYY-MM-DD') : null;
           return item;
         });
 
