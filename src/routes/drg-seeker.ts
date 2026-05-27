@@ -25,7 +25,10 @@ router.get("/", async (req, res, next) => {
 router.post("/seeker", async (req: any, res: any, next: NextFunction) => {
   const version = req.body.version || '6';
   const rows = req.body.data;
+  let ip = req.headers['x-real-ip'] || req.headers['x-forwarded-for'] || req.ip;
+  
   if (!rows || !Array.isArray(rows) || rows.length === 0) {
+    console.log(`status 400, Invalid data format (data: [{row...}])`, ip);
     return res.json({ status: 400, message: 'Invalid data format (data: [{row...}])' });
   }
   let data = [];
@@ -39,7 +42,7 @@ router.post("/seeker", async (req: any, res: any, next: NextFunction) => {
     let los = row?.los_day || row?.los || 0;
     
     let dbfData: any = {
-      hcode: process.env.HOSPCODE || row.hcode || '00000'
+      hcode: row.hcode || process.env.HOSPCODE || '00000'
     };
     if (row?.dateadm && row?.datedsc){
       row.dateadm = new Date(row.dateadm);
@@ -79,6 +82,7 @@ router.post("/seeker", async (req: any, res: any, next: NextFunction) => {
           .then(r => fileMetaData = r);
 
         fs.unlink(dbfFilePath, () => { });
+        console.log(`status 200, Success`, ip);
         return res.json({ status: 200, data: drgResult, tgrp: { FileName: tgrpExe, metadata: fileMetaData } });
       })
       .catch((error) => {
