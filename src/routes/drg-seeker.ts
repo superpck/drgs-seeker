@@ -60,7 +60,14 @@ router.post("/seeker", async (req: any, res: any, next: NextFunction) => {
         let tgrpExe = `${foler}/${exeFile}`;
         let shCommand = `CD ${foler}/ && ${tgrpExe} ${dbfFilePath}`;
         await shell.exec(shCommand, { silent: true });
-        const drgResult = await dbfToJson(dbfFilePath);
+        let drgResult = await dbfToJson(dbfFilePath);
+        drgResult = drgResult.map((item: any) => {
+          delete item.dateadm;
+          delete item.timeadm;
+          delete item.datedsc;
+          delete item.timedsc;
+          return item;
+        });
 
         let fileMetaData: any;
         await getFileMetadata(tgrpExe)
