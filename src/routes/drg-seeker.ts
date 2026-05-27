@@ -30,23 +30,25 @@ router.post("/seeker", async (req: any, res: any, next: NextFunction) => {
   }
   let data = [];
   for (let row of rows) {
+    let los = row?.los_day || row?.los || 0;
     let dbfData: any = {
       hcode: process.env.HOSPCODE || row.hcode || '00000',
-      dateadm: row?.los_day ? new Date(dayjs().subtract(row.los_day, 'days').format('YYYY-MM-DD')) : null,
-      timeadm: row?.los_day ? '0000' : '',
-      datedsc: row?.los_day ? new Date(dayjs().format('YYYY-MM-DD')) : null,
-      timedsc: row?.los_day ? '0000' : '',
-      los: row?.los_day || 0, leaveday: row?.leaveday || 0,
+      dateadm: los ? new Date(dayjs().subtract(los, 'days').format('YYYY-MM-DD')) : null,
+      timeadm: los ? '0000' : '',
+      datedsc: los ? new Date(dayjs().format('YYYY-MM-DD')) : null,
+      timedsc: los ? '0000' : '',
+      los,
+      leaveday: row?.leaveday || 0,
     };
     data.push({ ...row, ...dbfData });
   }
   const suffix = (await randomString(6, 'AlphaNumeric')).toString();
   const dbfFilePath = `${process.env.TEMP_FOLDER}/drg_${dayjs().format('YYYYMMDDHHmmss')}_${suffix}.dbf`;
   try {
-    const foler = version=='5' ? process.env.TGRP5_FOLDER : process.env.TGRP6_FOLDER;
-    const exeFile = version=='5' ? process.env.TGRP5 : process.env.TGRP6;
-   
-    
+    const foler = version == '5' ? process.env.TGRP5_FOLDER : process.env.TGRP6_FOLDER;
+    const exeFile = version == '5' ? process.env.TGRP5 : process.env.TGRP6;
+
+
     createDrgTable(dbfFilePath, data)
       .then(async () => {
         let tgrpExe = `${foler}/${exeFile}`;

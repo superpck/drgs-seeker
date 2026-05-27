@@ -1,15 +1,14 @@
 {
   "compilerOptions": {
     "target": "es2020",
-    "module": "commonjs",
+    "module": "node16",
     "forceConsistentCasingInFileNames": true,
     "strict": false,
     "noImplicitAny": false,
     "removeComments": true,
-    "moduleResolution": "node",
+    "moduleResolution": "node16",
     "esModuleInterop": true,
     "sourceMap": true,
-    "baseUrl": "./",
     "rootDir": "./src",
     "outDir": "./dist",
     "skipLibCheck": true,
