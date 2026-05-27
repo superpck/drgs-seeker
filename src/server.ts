@@ -1,4 +1,4 @@
-require('@dotenvx/dotenvx').config({ debug: false });
+require('@dotenvx/dotenvx').config({ debug: false, silence: true });
 import express, { Application } from 'express';
 import bodyParser from 'body-parser';
 import helmet from "helmet";
