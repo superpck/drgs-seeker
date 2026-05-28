@@ -1,6 +1,6 @@
 {
   "name": "drg-seeker",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "main": "index.js",
   "scripts": {
     "dev": "npx dotenvx run -- npx ts-node-dev --respawn --transpile-only src/server.ts",
