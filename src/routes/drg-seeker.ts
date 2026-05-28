@@ -51,8 +51,8 @@ router.post("/seeker", async (req: any, res: any, next: NextFunction) => {
         let tgrpExe = `${folder}/${exeFile}`;
         let shCommand = `CD ${folder}/ && ${tgrpExe} ${dbfFilePath}`;
         await shell.exec(shCommand, { silent: true });
+        
         let drgResult = await dbfToJson(dbfFilePath);
-        console.log(`DRG Result: `, drgResult);
         drgResult = drgResult.map((item: any) => {
           return transformAfter(item);
         });
