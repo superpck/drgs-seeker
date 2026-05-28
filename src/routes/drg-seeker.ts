@@ -41,14 +41,17 @@ router.post("/seeker", async (req: any, res: any, next: NextFunction) => {
 
   const suffix = (await randomString(6, 'AlphaNumeric')).toString();
   const dbfFilePath = `${process.env.TEMP_FOLDER}/drg_${dayjs().format('YYYYMMDDHHmmss')}_${suffix}.dbf`;
+
+  console.log(`DRG Seeker Request ${version}, ${dbfFilePath}`, data);
+
   try {
-    const foler = version == '5' ? process.env.TGRP5_FOLDER : process.env.TGRP6_FOLDER;
+    const folder = version == '5' ? process.env.TGRP5_FOLDER : process.env.TGRP6_FOLDER;
     const exeFile = version == '5' ? process.env.TGRP5 : process.env.TGRP6;
 
     createDrgTable(dbfFilePath, data)
       .then(async () => {
-        let tgrpExe = `${foler}/${exeFile}`;
-        let shCommand = `CD ${foler}/ && ${tgrpExe} ${dbfFilePath}`;
+        let tgrpExe = `${folder}/${exeFile}`;
+        let shCommand = `CD ${folder}/ && ${tgrpExe} ${dbfFilePath}`;
         await shell.exec(shCommand, { silent: true });
         let drgResult = await dbfToJson(dbfFilePath);
         console.log(`DRG Result: `, drgResult);
