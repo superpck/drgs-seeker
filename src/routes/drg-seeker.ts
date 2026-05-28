@@ -42,8 +42,6 @@ router.post("/seeker", async (req: any, res: any, next: NextFunction) => {
   const suffix = (await randomString(6, 'AlphaNumeric')).toString();
   const dbfFilePath = `${process.env.TEMP_FOLDER}/drg_${dayjs().format('YYYYMMDDHHmmss')}_${suffix}.dbf`;
 
-  console.log(`DRG Seeker Request ${version}, ${dbfFilePath}`, data);
-
   try {
     const folder = version == '5' ? process.env.TGRP5_FOLDER : process.env.TGRP6_FOLDER;
     const exeFile = version == '5' ? process.env.TGRP5 : process.env.TGRP6;
@@ -135,6 +133,11 @@ function transformBefore(row: any) {
 }
 
 function transformAfter(row: any) {
+  for (let key in row) {
+    if (!row[key]){
+      delete row[key];
+    }
+  }
   row.dateadm = row.dateadm ? dayjs(row.dateadm).format('YYYY-MM-DD') : null;
   row.datedsc = row.datedsc ? dayjs(row.datedsc).format('YYYY-MM-DD') : null;
   return row;
