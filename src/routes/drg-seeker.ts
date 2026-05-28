@@ -26,44 +26,24 @@ router.post("/seeker", async (req: any, res: any, next: NextFunction) => {
   const version = req.body.version || '6';
   const rows = req.body.data;
   let ip = req.headers['x-real-ip'] || req.headers['x-forwarded-for'] || req.ip;
-  
+
   if (!rows || !Array.isArray(rows) || rows.length === 0) {
     console.log(`status 400, Invalid data format (data: [{row...}])`, ip);
     return res.json({ status: 400, message: 'Invalid data format (data: [{row...}])' });
   }
   let data = [];
   for (let row of rows) {
-    if (row?.sex){
-      row.sex = row.sex.toString();
-    }
-    if (row?.age){
-      row.age = row.age+ "";
-    }
-    let los = row?.los_day || row?.los || 0;
-    
-    let dbfData: any = {
+    data.push({
+      ...transformBefore(row),
       hcode: row.hcode || process.env.HOSPCODE || '00000'
-    };
-    if (row?.dateadm && row?.datedsc){
-      row.dateadm = new Date(row.dateadm);
-      row.datedsc = new Date(row.datedsc);
-    } else {
-      row.dateadm = los ? new Date(dayjs().subtract(los, 'days').format('YYYY-MM-DD')) : null;
-      row.timeadm = los ? '0000' : '';
-      row.datedsc = los ? new Date(dayjs().format('YYYY-MM-DD')) : null;
-      row.timedsc = los ? '0000' : '';
-    }
-
-    row.los = los;
-    row.leaveday = row?.leaveday || 0;
-    data.push({ ...row, ...dbfData });
+    });
   }
+
   const suffix = (await randomString(6, 'AlphaNumeric')).toString();
   const dbfFilePath = `${process.env.TEMP_FOLDER}/drg_${dayjs().format('YYYYMMDDHHmmss')}_${suffix}.dbf`;
   try {
     const foler = version == '5' ? process.env.TGRP5_FOLDER : process.env.TGRP6_FOLDER;
     const exeFile = version == '5' ? process.env.TGRP5 : process.env.TGRP6;
-
 
     createDrgTable(dbfFilePath, data)
       .then(async () => {
@@ -71,10 +51,9 @@ router.post("/seeker", async (req: any, res: any, next: NextFunction) => {
         let shCommand = `CD ${foler}/ && ${tgrpExe} ${dbfFilePath}`;
         await shell.exec(shCommand, { silent: true });
         let drgResult = await dbfToJson(dbfFilePath);
+        console.log(`DRG Result: `, drgResult);
         drgResult = drgResult.map((item: any) => {
-          item.dateadm = item.dateadm? dayjs(item.dateadm).format('YYYY-MM-DD') : null;
-          item.datedsc = item.datedsc? dayjs(item.datedsc).format('YYYY-MM-DD') : null;
-          return item;
+          return transformAfter(item);
         });
 
         let fileMetaData: any;
@@ -124,4 +103,38 @@ async function unlinkCDX(directory: string, extension: string) {
       });
   });
 }
+
+function transformBefore(row: any) {
+  if (row?.sex) {
+    row.sex = row.sex.toString();
+  }
+  if (row?.age) {
+    row.age = row.age + "";
+  }
+  if (row?.ageday) {
+    row.ageday = row.ageday + "";
+  }
+  let los = row?.los_day || row?.los || 0;
+
+  if (row?.dateadm && row?.datedsc) {
+    row.dateadm = new Date(row.dateadm);
+    row.datedsc = new Date(row.datedsc);
+  } else {
+    row.dateadm = los ? new Date(dayjs().subtract(los, 'days').format('YYYY-MM-DD')) : null;
+    row.timeadm = los ? '0000' : '';
+    row.datedsc = los ? new Date(dayjs().format('YYYY-MM-DD')) : null;
+    row.timedsc = los ? '0000' : '';
+  }
+
+  row.los = los;
+  row.leaveday = row?.leaveday || 0;
+  return row;
+}
+
+function transformAfter(row: any) {
+  row.dateadm = row.dateadm ? dayjs(row.dateadm).format('YYYY-MM-DD') : null;
+  row.datedsc = row.datedsc ? dayjs(row.datedsc).format('YYYY-MM-DD') : null;
+  return row;
+}
+
 module.exports = router;
